@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -9,10 +9,50 @@
 
   <ItemGroup>
     <None Remove="Images\menu2.png" />
+    <None Remove="Images\SnakeHeadBlue.png" />
+    <None Remove="Images\SnakeHeadGreen.png" />
+    <None Remove="Images\SnakeHeadPurple.png" />
+    <None Remove="Images\SnakeHeadRed.png" />
+    <None Remove="Images\SnakeHeadYellow.png" />
+    <None Remove="Images\SnakePartsBlue.png" />
+    <None Remove="Images\SnakePartsGreen.png" />
+    <None Remove="Images\SnakePartsPurple.png" />
+    <None Remove="Images\SnakePartsRed.png" />
+    <None Remove="Images\SnakePartsYellow.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Images\menu2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\SnakeHeadBlue.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\SnakeHeadGreen.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\SnakeHeadPurple.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\SnakeHeadRed.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\SnakeHeadYellow.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\SnakePartsBlue.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\SnakePartsGreen.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\SnakePartsPurple.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\SnakePartsRed.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\SnakePartsYellow.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

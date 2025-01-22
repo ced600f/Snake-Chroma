@@ -5,12 +5,11 @@ class Program
 {
     static int Main()
     {
-        //int screenWidth = 1920;
-        //int screenHeight = 1080;
         int screenWidth = 1920;
         int screenHeight = 1080;
 
-        Raylib.InitWindow(screenWidth, screenHeight, "Viperide");
+        Raylib.InitWindow(screenWidth, screenHeight, "Snake Chroma");
+        Raylib.ToggleFullscreen();
         Raylib.SetTargetFPS(60);
 
         SceneManager sceneManager = new SceneManager();
