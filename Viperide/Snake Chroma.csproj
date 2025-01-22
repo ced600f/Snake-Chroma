@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <None Remove="Images\menu2.png" />
+    <None Remove="Images\Red.png" />
     <None Remove="Images\SnakeHeadBlue.png" />
     <None Remove="Images\SnakeHeadGreen.png" />
     <None Remove="Images\SnakeHeadPurple.png" />
@@ -23,6 +24,9 @@
 
   <ItemGroup>
     <Content Include="Images\menu2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Red.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\SnakeHeadBlue.png">

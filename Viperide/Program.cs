@@ -13,6 +13,7 @@ class Program
         Raylib.SetTargetFPS(60);
 
         SceneManager sceneManager = new SceneManager();
+        Textures texturesManager = new Textures();
 
         sceneManager.Load<SceneMenu>();
 
