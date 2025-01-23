@@ -1,5 +1,4 @@
 ﻿using Raylib_cs;
-using Viperide.Scenes;
 
 class Program
 {
@@ -9,7 +8,7 @@ class Program
         int screenHeight = 1080;
 
         Raylib.InitWindow(screenWidth, screenHeight, "Snake Chroma");
-        Raylib.ToggleFullscreen();
+        //Raylib.ToggleFullscreen();
         Raylib.SetTargetFPS(60);
 
         SceneManager sceneManager = new SceneManager();

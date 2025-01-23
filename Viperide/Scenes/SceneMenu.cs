@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 
 public class SceneMenu : Scene
 {
-    Texture2D imgMenu = Raylib.LoadTexture("Images/menu2.png");
-
 
     public override void Load()
     {
@@ -17,7 +15,12 @@ public class SceneMenu : Scene
 
     public override void Draw()
     {
-        Raylib.DrawTexture(imgMenu, 0,0,Color.White);     
+        try
+        {
+            Texture2D imgMenu = ((Textures)Services.Get<Textures>()).GetTexture("Menu");
+            Raylib.DrawTexture(imgMenu, 0, 0, Color.White);
+        }
+        catch { }
     }
 
     public override void Update()

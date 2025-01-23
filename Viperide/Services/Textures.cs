@@ -10,7 +10,6 @@ public class Textures
 {
     Dictionary <String,Texture2D>textures = new Dictionary <String,Texture2D> ();
 
-
     public Textures()
     {
         Services.Register<Textures>(this);
@@ -20,6 +19,10 @@ public class Textures
     public void LoadTextures()
     {
         Texture2D Apple = Raylib.LoadTexture("Images/Red.png");
+        Texture2D Banana = Raylib.LoadTexture("Images/Yellow.png");
+        Texture2D BlueBerry = Raylib.LoadTexture("Images/Blue.png");
+        Texture2D Plum = Raylib.LoadTexture("Images/Purple.png");
+        Texture2D WaterMelon = Raylib.LoadTexture("Images/Green.png");
 
         Texture2D SnakeHeadBlue = Raylib.LoadTexture("Images/SnakeHeadBlue");
         Texture2D SnakeHeadGreen = Raylib.LoadTexture("Images/SnakeHeadGreen");
@@ -33,6 +36,10 @@ public class Textures
         Texture2D SnakePartsYellow = Raylib.LoadTexture("Images/SnakePartsYellow");
 
         textures.Add("Red", Apple);
+        textures.Add("Yellow", Banana);
+        textures.Add("Blue", BlueBerry);
+        textures.Add("Purple", Plum);
+        textures.Add("Green", WaterMelon);
         textures.Add("SnakeHeadBlue", SnakeHeadBlue);
         textures.Add("SnakeHeadGreen", SnakeHeadGreen);
         textures.Add("SnakeHeadPurple", SnakeHeadPurple);
@@ -43,6 +50,11 @@ public class Textures
         textures.Add("SnakePartsPurple", SnakePartsPurple);
         textures.Add("SnakePartsRed", SnakePartsRed);
         textures.Add("SnakePartsYellow", SnakePartsYellow);
+
+        Texture2D imgMenu = Raylib.LoadTexture("Images/menu2.png");
+        textures.Add("Menu", imgMenu);
+        Texture2D imgGameOver = Raylib.LoadTexture("Images/gameover.png");
+        textures.Add("GameOver", imgGameOver);
     }
 
     public Texture2D GetTexture(String Name) => textures[Name];

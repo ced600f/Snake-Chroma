@@ -34,5 +34,24 @@ public class Fruit
         catch (Exception ex) { }
     }
 
+    public static Fruit Random(Grid grid)
+    {
+        Random random = new Random();
+        int type = random.Next(0, 5);
+        switch(type)
+        {
+            case 0:
+                return new Apple(grid);
+            case 1:
+                return new BlueBerry(grid);
+            case 2:
+                return new Banana(grid);
+            case 3:
+                return new Plum(grid);
+            default:
+                return new WaterMelon(grid);
+        }
+    }
+
 }
 

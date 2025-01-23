@@ -11,7 +11,7 @@ public class SceneSnake : Scene
 {
     Grid grid = new Grid(26,14);
     Snake snake;
-    Apple apple;
+    Fruit fruit;
 
     float timer = 0;
     float interval = 0.5f;
@@ -19,13 +19,13 @@ public class SceneSnake : Scene
     {
         grid.position = new Vector2(128, 92);
         snake = new Snake(new(10,5),grid);
-        apple = new Apple(grid);
+        fruit = Fruit.Random(grid);
     }
 
     public override void Draw()
     {
         grid.Draw();
-        apple.Draw();
+        fruit.Draw();
         snake.Draw();
     }
 
@@ -37,17 +37,17 @@ public class SceneSnake : Scene
         if (timer > interval)
         {
             snake.Move();
-            if (snake.head == apple.coordinate)
+            if (snake.head == fruit.coordinate)
             {
-                EatApple();
+                EatFruit();
             }
             timer = 0;
         }    
     }
 
-    private void EatApple()
+    private void EatFruit()
     {
-        apple.Respawn();
+        fruit = Fruit.Random(grid);
         snake.Growth();
     }
 
