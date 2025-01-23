@@ -13,8 +13,11 @@ class Program
 
         SceneManager sceneManager = new SceneManager();
         Textures texturesManager = new Textures();
+        SoundManager soundManager = new SoundManager();
 
+        soundManager.PlayMusic("Ressources/menu.mp3");
         sceneManager.Load<SceneMenu>();
+
 
         while (!Raylib.WindowShouldClose())
         {

@@ -66,6 +66,18 @@ public struct Coordinates
     }
     public override int GetHashCode() => HashCode.Combine(column, row);
     
+    public static double GetAngle(Coordinates coordinates)
+    {
+        Vector2 a = coordinates.ToVector2;
+        return Math.Atan2(0 - a.Y, 0 - a.X) * (180 / Math.PI);
+    }
+
+    public static double GetAngle(Coordinates c1, Coordinates c2)
+    {
+        Vector2 a = c1.ToVector2;
+        Vector2 b = c2.ToVector2;
+        return Math.Atan2(b.Y - a.Y, b.X - a.X) * (180 / Math.PI);
+    }
 
     public override string ToString() => $"({column},{row})";
 }

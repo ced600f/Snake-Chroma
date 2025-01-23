@@ -17,6 +17,7 @@ public class Snake
 {
     #region Properties
     Grid grid;
+    private string colorName = "Green";
 
     Queue<Coordinates> body = new Queue<Coordinates>();
     Coordinates currentDirection = Coordinates.right;
@@ -24,7 +25,7 @@ public class Snake
     bool directionChanged;
     private bool growing = false;
 
-    Color color = Color.White;
+    Color color = Color.Green;
     #endregion
 
     public Coordinates head => body.Last();
@@ -40,10 +41,48 @@ public class Snake
 
     public void Draw()
     {
+        int i = 0;
         foreach (Coordinates coordinate in body)
         {
             var posInWorld = grid.GridToWorld(coordinate);
-            Raylib.DrawRectangle((int)posInWorld.X, (int)posInWorld.Y, grid.cellSize, grid.cellSize, color);
+            if (i == body.Count-1)
+            {
+                Texture2D texture = ((Textures)Services.Get<Textures>()).GetTexture("SnakeHead"+colorName);
+                var inWorld = grid.GridToWorld(coordinate);
+                Rectangle source = new Rectangle(0, 45, 60, 90);
+
+                int DeltaX = (int)(grid.cellSize/2 - source.Width/2);
+                int DeltaY = (int)(grid.cellSize/2 - source.Height/2);
+
+                Rectangle dest = new Rectangle((int)inWorld.X+source.Width/2+DeltaX, (int)inWorld.Y+source.Height/2+DeltaY, source.Width, source.Height);
+                Raylib.DrawTexturePro(texture, source, dest, new System.Numerics.Vector2(source.Width/2, source.Height/2),(float)Coordinates.GetAngle(this.currentDirection)-90 ,Color.White);
+
+            }
+            else if (i==0)
+            {
+                Texture2D texture = ((Textures)Services.Get<Textures>()).GetTexture("SnakeParts" + colorName);
+                var inWorld = grid.GridToWorld(coordinate);
+                Rectangle source = new Rectangle(84, 0, 84, 84);
+
+                int DeltaX = (int)(grid.cellSize / 2 - source.Width / 2);
+                int DeltaY = (int)(grid.cellSize / 2 - source.Height / 2);
+
+                Rectangle dest = new Rectangle((int)inWorld.X + source.Width / 2 + DeltaX, (int)inWorld.Y + source.Height / 2 + DeltaY, source.Width, source.Height);
+                Raylib.DrawTexturePro(texture, source, dest, new System.Numerics.Vector2(source.Width / 2, source.Height / 2), (float)Coordinates.GetAngle(coordinate, body.ElementAt(i + 1))+90, Color.White);
+            }
+            else
+            {
+                Texture2D texture = ((Textures)Services.Get<Textures>()).GetTexture("SnakeParts" + colorName);
+                var inWorld = grid.GridToWorld(coordinate);
+                Rectangle source = new Rectangle(0, 0, 84, 84);
+
+                int DeltaX = (int)(grid.cellSize / 2 - source.Width / 2);
+                int DeltaY = (int)(grid.cellSize / 2 - source.Height / 2);
+
+                Rectangle dest = new Rectangle((int)inWorld.X + source.Width / 2 + DeltaX, (int)inWorld.Y + source.Height / 2 + DeltaY, source.Width, source.Height);
+                Raylib.DrawTexturePro(texture, source, dest, new System.Numerics.Vector2(source.Width / 2, source.Height / 2), (float)Coordinates.GetAngle(coordinate, body.ElementAt(i+1)) + 90, Color.White);
+            }
+            i++;
         }
     }
 
@@ -54,14 +93,19 @@ public class Snake
         switch(value)
         {
             case 0:
+                colorName = "Purple";
                 color = Color.Purple; break;
             case 1:
+                colorName = "Red"; 
                 color = Color.Red; break;
-            case 2: 
+            case 2:
+                colorName = "Green";
                 color = Color.Green; break;
             case 3:
+                colorName = "Blue";
                 color = Color.Blue; break;
             case 4:
+                colorName = "Yellow";
                 color = Color.Yellow; break;
             default:
                 break;

@@ -20,6 +20,9 @@ public class SceneSnake : Scene
         grid.position = new Vector2(128, 92);
         snake = new Snake(new(10,5),grid);
         fruit = Fruit.Random(grid);
+
+        Services.Get<SoundManager>().PlayMusic("Ressources/game.mp3");
+
     }
 
     public override void Draw()

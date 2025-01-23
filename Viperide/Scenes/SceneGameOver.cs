@@ -9,7 +9,7 @@ public class SceneGameOver : Scene
 {
     public override void Load()
     {
-
+        Services.Get<SoundManager>().PlayMusic("Ressources/gameover.mp3");
     }
 
     public override void Draw()

@@ -24,16 +24,16 @@ public class Textures
         Texture2D Plum = Raylib.LoadTexture("Images/Purple.png");
         Texture2D WaterMelon = Raylib.LoadTexture("Images/Green.png");
 
-        Texture2D SnakeHeadBlue = Raylib.LoadTexture("Images/SnakeHeadBlue");
-        Texture2D SnakeHeadGreen = Raylib.LoadTexture("Images/SnakeHeadGreen");
-        Texture2D SnakeHeadPurple = Raylib.LoadTexture("Images/SnakeHeadPurple");
-        Texture2D SnakeHeadRed = Raylib.LoadTexture("Images/SnakeHeadRed");
-        Texture2D SnakeHeadYellow = Raylib.LoadTexture("Images/SnakeHeadYellow");
-        Texture2D SnakePartsBlue = Raylib.LoadTexture("Images/SnakePartsBlue");
-        Texture2D SnakePartsGreen = Raylib.LoadTexture("Images/SnakePartsGreen");
-        Texture2D SnakePartsPurple = Raylib.LoadTexture("Images/SnakePartsPurple");
-        Texture2D SnakePartsRed = Raylib.LoadTexture("Images/SnakePartsRed");
-        Texture2D SnakePartsYellow = Raylib.LoadTexture("Images/SnakePartsYellow");
+        Texture2D SnakeHeadBlue = Raylib.LoadTexture("Images/SnakeHeadBlue.png");
+        Texture2D SnakeHeadGreen = Raylib.LoadTexture("Images/SnakeHeadGreen.png");
+        Texture2D SnakeHeadPurple = Raylib.LoadTexture("Images/SnakeHeadPurple.png");
+        Texture2D SnakeHeadRed = Raylib.LoadTexture("Images/SnakeHeadRed.png");
+        Texture2D SnakeHeadYellow = Raylib.LoadTexture("Images/SnakeHeadYellow.png");
+        Texture2D SnakePartsBlue = Raylib.LoadTexture("Images/SnakePartsBlue.png");
+        Texture2D SnakePartsGreen = Raylib.LoadTexture("Images/SnakePartsGreen.png");
+        Texture2D SnakePartsPurple = Raylib.LoadTexture("Images/SnakePartsPurple.png");
+        Texture2D SnakePartsRed = Raylib.LoadTexture("Images/SnakePartsRed.png");
+        Texture2D SnakePartsYellow = Raylib.LoadTexture("Images/SnakePartsYellow.png");
 
         textures.Add("Red", Apple);
         textures.Add("Yellow", Banana);

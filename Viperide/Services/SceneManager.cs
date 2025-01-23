@@ -32,6 +32,7 @@ public class SceneManager : ISceneManager
 
     public void Update()
     { 
+        //Services.Get<SoundManager>().Update();
         _currentScene?.Update(); 
     }
 
