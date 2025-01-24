@@ -16,6 +16,8 @@ public class SoundManager
         Raylib.InitAudioDevice();
         sounds.Add("Eating", Raylib.LoadSound("Ressources/eating.mp3"));
         sounds.Add("Collision", Raylib.LoadSound("Ressources/collision.mp3"));
+        sounds.Add("Pain", Raylib.LoadSound("Ressources/pain.mp3"));
+        sounds.Add("Disgusted", Raylib.LoadSound("Ressources/disgust.mp3"));
     }
 
     ~SoundManager()

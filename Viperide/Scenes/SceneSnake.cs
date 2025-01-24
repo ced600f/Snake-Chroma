@@ -73,7 +73,7 @@ public class SceneSnake : Scene
 
         if (snake.IsOverlapping())
         {
-            Services.Get<SoundManager>().PlayFX("Collision");
+            Services.Get<SoundManager>().PlayFX("Pain");
             snake.LoseQueue(snake.head);
         }
 
@@ -158,6 +158,7 @@ public class SceneSnake : Scene
         }
         else
         {
+            Services.Get<SoundManager>().PlayFX("Disgusted");
             snake.RemoveElements(1);
         }
         fruit.isEaten = true;

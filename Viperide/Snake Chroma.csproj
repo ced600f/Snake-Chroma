@@ -26,10 +26,12 @@
     <None Remove="Images\SnakePartsYellow.png" />
     <None Remove="Images\Yellow.png" />
     <None Remove="Ressources\collision.mp3" />
+    <None Remove="Ressources\disgust.mp3" />
     <None Remove="Ressources\eating.mp3" />
     <None Remove="Ressources\game.mp3" />
     <None Remove="Ressources\gameover.mp3" />
     <None Remove="Ressources\menu.mp3" />
+    <None Remove="Ressources\pain.mp3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -87,6 +89,9 @@
     <Content Include="Ressources\collision.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Ressources\disgust.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Ressources\eating.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -94,6 +99,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Ressources\menu.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Ressources\pain.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
