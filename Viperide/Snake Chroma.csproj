@@ -25,6 +25,8 @@
     <None Remove="Images\SnakePartsRed.png" />
     <None Remove="Images\SnakePartsYellow.png" />
     <None Remove="Images\Yellow.png" />
+    <None Remove="Ressources\collision.mp3" />
+    <None Remove="Ressources\eating.mp3" />
     <None Remove="Ressources\game.mp3" />
     <None Remove="Ressources\gameover.mp3" />
     <None Remove="Ressources\menu.mp3" />
@@ -80,6 +82,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\Yellow.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Ressources\collision.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Ressources\eating.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Ressources\game.mp3">

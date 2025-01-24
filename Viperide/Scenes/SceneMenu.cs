@@ -10,7 +10,7 @@ public class SceneMenu : Scene
 
     public override void Load()
     {
-            
+        Services.Get<SoundManager>().PlayMusic("Ressources/menu.mp3");
     }
 
     public override void Draw()

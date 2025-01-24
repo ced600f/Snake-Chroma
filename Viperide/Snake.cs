@@ -28,6 +28,8 @@ public class Snake
     Color color = Color.Green;
     #endregion
 
+    public int Length => body.Count;
+    public string SnakeColor => colorName;
     public Coordinates head => body.Last();
     
     public Snake(Coordinates coordinate, Grid grid, int startSize=3)
@@ -80,9 +82,37 @@ public class Snake
                 int DeltaY = (int)(grid.cellSize / 2 - source.Height / 2);
 
                 Rectangle dest = new Rectangle((int)inWorld.X + source.Width / 2 + DeltaX, (int)inWorld.Y + source.Height / 2 + DeltaY, source.Width, source.Height);
-                Raylib.DrawTexturePro(texture, source, dest, new System.Numerics.Vector2(source.Width / 2, source.Height / 2), (float)Coordinates.GetAngle(coordinate, body.ElementAt(i+1)) + 90, Color.White);
+                Raylib.DrawTexturePro(texture, source, dest, new System.Numerics.Vector2(source.Width / 2, source.Height / 2), (float)Coordinates.GetAngle(coordinate, body.ElementAt(i+1)) - 90, Color.White);
             }
             i++;
+        }
+    }
+
+    public bool IsOutOfBound()
+    {
+        return head.row<0 || head.column<0 ||head.row>=grid.rows || head.column>=grid.columns;
+    }
+
+    public bool IsOverlapping()
+    {
+        return body.Count != body.Distinct().Count();
+    }
+
+    public void RemoveElements(int nElements)
+    {
+        for(int i = 0; i < nElements; i++)
+        {
+            if (body.Count > 2)
+                body.Dequeue();
+        }
+    }
+
+    public void LoseQueue(Coordinates cut)
+    {
+        Coordinates coordinates = body.Dequeue();
+        while (coordinates != cut)
+        {
+            coordinates = body.Dequeue();
         }
     }
 
@@ -126,7 +156,19 @@ public class Snake
             body.Dequeue();
 
         growing = false;
-        RandomColor();
+    }
+
+    public void Collision(int nElement=0)
+    {
+        var head = body.Last();
+        var newHead = head - currentDirection;
+        body.Enqueue(newHead);
+        body.Dequeue();
+    }
+
+    public bool IsCollindingWith(Coordinates coordinates)
+    {
+        return body.Contains(coordinates);
     }
 
     public void ChangeDirection(Coordinates direction)

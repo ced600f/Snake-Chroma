@@ -7,51 +7,160 @@ using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 
+enum GameState
+{
+    Playing,
+    Paused,
+    GameOver
+}
+
 public class SceneSnake : Scene
 {
     Grid grid = new Grid(26,14);
     Snake snake;
-    Fruit fruit;
+    List<Fruit> fruits = new List<Fruit>();
 
-    float timer = 0;
-    float interval = 0.5f;
+    private GameState gameState = GameState.Playing;
+    private Timer timerFruit;
+    private Timer timerPause;
+    private Timer timerSnake;
     public override void Load()
     {
         grid.position = new Vector2(128, 92);
         snake = new Snake(new(10,5),grid);
-        fruit = Fruit.Random(grid);
-
+        OnFruitTriggered();
         Services.Get<SoundManager>().PlayMusic("Ressources/game.mp3");
 
+        // Timers
+        timerSnake = AddTimer(OnTimerTriggered, 0.4f);
+        Timer timerColor = AddTimer(OnChangeColor, 10);
+        timerColor.SetRandom(2, 15);
+
+        timerFruit = AddTimer(OnFruitTriggered, 7);
+        timerFruit.SetRandom(3, 10);
+
+        timerPause = AddTimer(OnEndPauseTriggered, 2);
+        timerPause.Stop();
+    }
+
+    public void OnEndPauseTriggered()
+    {
+        gameState = GameState.Playing;
+        timerSnake.Start();
+    }
+
+    public void OnFruitTriggered()
+    {
+        Fruit fruit = Fruit.Random(grid);
+        fruits.Add(fruit);
+    }
+    public void OnChangeColor()
+    {
+        snake.RandomColor();
+    }
+    public void OnTimerTriggered()
+    {
+        snake.Move();
+
+        if (snake.IsOutOfBound())
+        {
+            Services.Get<SoundManager>().PlayFX("Collision");
+            gameState = GameState.Paused;
+            timerSnake.Stop();
+            snake.Collision();
+            timerPause.Restart();
+        }
+
+        if (snake.IsOverlapping())
+        {
+            Services.Get<SoundManager>().PlayFX("Collision");
+            snake.LoseQueue(snake.head);
+        }
+
+        List <Fruit>lstTmp = fruits.ToList();
+        foreach (var fruit in lstTmp)
+        {
+            if (snake.IsCollindingWith(fruit.coordinate))
+            {
+                EatFruit(fruit);
+            }
+        }
+
+        if (snake.Length <= 2)
+        {
+            GameOver();
+        }
+    }
+
+    public void GameOver()
+    {
+        ((ISceneManager)Services.Get<ISceneManager>())?.Load<SceneGameOver>();
+        gameState = GameState.GameOver;
     }
 
     public override void Draw()
     {
         grid.Draw();
-        fruit.Draw();
+        foreach (var fruit in fruits)
+        {
+            fruit.Draw();
+        }
         snake.Draw();
     }
 
     public override void Update()
     {
-        snake.ChangeDirection(GetInputsDirection());
-        timer += Raylib.GetFrameTime();
-        
-        if (timer > interval)
+        base.Update();
+        switch (gameState)
         {
-            snake.Move();
-            if (snake.head == fruit.coordinate)
-            {
-                EatFruit();
-            }
-            timer = 0;
-        }    
+            case GameState.Paused:
+                UpdatePaused();
+                break;
+            case GameState.Playing:
+                UpdatePlaying(); 
+                break;
+            case GameState.GameOver:
+                break;
+        }
     }
 
-    private void EatFruit()
+    private void UpdatePlaying()
     {
-        fruit = Fruit.Random(grid);
-        snake.Growth();
+        snake.ChangeDirection(GetInputsDirection());
+        if (Raylib.IsKeyDown(KeyboardKey.P))
+        {
+            Pause();
+            gameState = GameState.Paused;
+        }
+    }
+    private void UpdatePaused()
+    {
+        if (Raylib.IsKeyDown(KeyboardKey.P))
+        {
+            Start();
+            gameState = GameState.Playing;
+        }
+    }
+
+    private void EatFruit(Fruit fruit)
+    {
+        Services.Get<SoundManager>().PlayFX("Eating");
+        for (int i = fruits.Count - 1; i >= 0; i--)
+        {
+            if (((Fruit)fruits[i]).isEaten)
+            {
+                fruits.RemoveAt(i);
+            }
+        }
+        if (snake.SnakeColor == fruit.color)
+        {
+            snake.Growth();
+        }
+        else
+        {
+            snake.RemoveElements(1);
+        }
+        fruit.isEaten = true;
     }
 
     private Coordinates GetInputsDirection()

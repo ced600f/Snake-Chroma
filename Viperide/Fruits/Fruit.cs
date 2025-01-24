@@ -10,6 +10,10 @@ public class Fruit
     public Coordinates coordinate { get; private set; }
     Grid grid;
     protected string fruit;
+    public bool isEaten = false;
+
+    public string color => fruit;
+
     public Fruit(Grid grid)
     {
         this.grid = grid;
