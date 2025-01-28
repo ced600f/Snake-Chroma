@@ -10,5 +10,6 @@ public class Apple:Fruit
     public Apple(Grid grid):base(grid)
     {
         fruit = "Red";
+        Type = TypeFruit.Apple;
     }
 }

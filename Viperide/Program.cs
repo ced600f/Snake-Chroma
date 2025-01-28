@@ -9,8 +9,8 @@ class Program
     {
         SetConfigFlags(ConfigFlags.ResizableWindow | ConfigFlags.VSyncHint);
 
-        int screenWidth = 1920;
-        int screenHeight = 1080;
+        int screenWidth = 1280;
+        int screenHeight = 900;
 
         InitWindow(screenWidth, screenHeight, "Snake Chroma");
         //Raylib.ToggleFullscreen();

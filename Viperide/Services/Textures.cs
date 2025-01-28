@@ -23,6 +23,12 @@ public class Textures
         Texture2D BlueBerry = Raylib.LoadTexture("Images/Blue.png");
         Texture2D Plum = Raylib.LoadTexture("Images/Purple.png");
         Texture2D WaterMelon = Raylib.LoadTexture("Images/Green.png");
+        Texture2D Pepper = Raylib.LoadTexture("Images/Red2.png");
+        Texture2D Lightning = Raylib.LoadTexture("Images/Yellow2.png");
+        Texture2D WaterDrop = Raylib.LoadTexture("Images/Blue2.png");
+        Texture2D Orb = Raylib.LoadTexture("Images/Purple2.png");
+        Texture2D Emerald = Raylib.LoadTexture("Images/Green2.png");
+        Texture2D Rainbow = Raylib.LoadTexture("Images/Rainbow.png");
 
         Texture2D SnakeHeadBlue = Raylib.LoadTexture("Images/SnakeHeadBlue.png");
         Texture2D SnakeHeadGreen = Raylib.LoadTexture("Images/SnakeHeadGreen.png");
@@ -40,6 +46,13 @@ public class Textures
         textures.Add("Blue", BlueBerry);
         textures.Add("Purple", Plum);
         textures.Add("Green", WaterMelon);
+        textures.Add("Red2", Pepper);
+        textures.Add("Yellow2", Lightning);
+        textures.Add("Blue2", WaterDrop);
+        textures.Add("Purple2", Orb);
+        textures.Add("Green2", Emerald);
+        textures.Add("Rainbow", Rainbow);
+
         textures.Add("SnakeHeadBlue", SnakeHeadBlue);
         textures.Add("SnakeHeadGreen", SnakeHeadGreen);
         textures.Add("SnakeHeadPurple", SnakeHeadPurple);

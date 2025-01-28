@@ -10,5 +10,6 @@ public class WaterMelon:Fruit
     public WaterMelon(Grid grid):base(grid)
     {
         fruit = "Green";
+        Type = TypeFruit.WaterMelon;
     }
 }

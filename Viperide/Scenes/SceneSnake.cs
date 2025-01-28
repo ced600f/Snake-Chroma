@@ -20,10 +20,28 @@ public class SceneSnake : Scene
     Snake snake;
     List<Fruit> fruits = new List<Fruit>();
 
-    private GameState gameState = GameState.Playing;
+    #region timers
+    private readonly float moveTimerDuration = 0.4f;
+    private readonly float colorTimerDurationMin = 5;
+    private readonly float colorTimerDurationMax = 15;
+    private readonly float fruitTimerDurationMin = 3;
+    private readonly float fruitTimerDurationMax = 10;
+    private readonly float pauseTimerDuration = 2;
+    private readonly float slowTimerDuration = 5;
+    private readonly float levelUpTimerDurationMin = 15;
+    private readonly float levelUpTimerDurationMax = 25;
+
     private Timer timerFruit;
     private Timer timerPause;
     private Timer timerSnake;
+    private Timer timerDefaultDuration;
+    private Timer timerLevelUp;
+    private Timer timerColor;
+    #endregion
+
+    private int Score=0;
+
+    private GameState gameState = GameState.Playing;
     public override void Load()
     {
         grid.position = new Vector2(128, 92);
@@ -32,15 +50,30 @@ public class SceneSnake : Scene
         Services.Get<SoundManager>().PlayMusic("Ressources/game.mp3");
 
         // Timers
-        timerSnake = AddTimer(OnTimerTriggered, 0.4f);
-        Timer timerColor = AddTimer(OnChangeColor, 10);
-        timerColor.SetRandom(2, 15);
+        timerSnake = AddTimer(OnTimerTriggered, moveTimerDuration);
 
-        timerFruit = AddTimer(OnFruitTriggered, 7);
-        timerFruit.SetRandom(3, 10);
+        timerColor = AddTimer(OnChangeColor, colorTimerDurationMin);
+        timerColor.SetRandom((int)colorTimerDurationMin, (int)colorTimerDurationMax);
 
-        timerPause = AddTimer(OnEndPauseTriggered, 2);
+        timerFruit = AddTimer(OnFruitTriggered, fruitTimerDurationMin);
+        timerFruit.SetRandom((int)fruitTimerDurationMin, (int)fruitTimerDurationMax);
+
+        timerLevelUp = AddTimer(OnLevelUpTriggered, levelUpTimerDurationMin);
+        timerLevelUp.SetRandom((int)levelUpTimerDurationMin, (int)levelUpTimerDurationMax);
+
+        timerPause = AddTimer(OnEndPauseTriggered, pauseTimerDuration, false);
         timerPause.Stop();
+
+        timerDefaultDuration = AddTimer(OnDefaultDurationTriggered, slowTimerDuration, false);
+        timerDefaultDuration.Stop();
+        Score = 0;
+
+    }
+
+    #region triggers
+    public void OnDefaultDurationTriggered()
+    {
+        timerSnake.SetDuration(moveTimerDuration);
     }
 
     public void OnEndPauseTriggered()
@@ -52,15 +85,44 @@ public class SceneSnake : Scene
     public void OnFruitTriggered()
     {
         Fruit fruit = Fruit.Random(grid);
+        // On teste si un fruit se superpose avec un autre fruit
+        while (Fruit.IsColliding(fruits, fruit))
+        {
+            fruit = Fruit.Random(grid);
+        }
         fruits.Add(fruit);
+        timerFruit?.SetRandom((int)fruitTimerDurationMin, (int)fruitTimerDurationMax);
+        timerFruit?.Restart();
+    }
+
+    public void OnLevelUpTriggered()
+    {
+        Fruit fruit = Fruit.RandomLevelUp(grid);
+        // On teste si un fruit se superpose avec un autre fruit
+        while (Fruit.IsColliding(fruits, fruit))
+        {
+            fruit = Fruit.RandomLevelUp(grid);
+        }
+        fruits.Add(fruit);
+        timerLevelUp.SetRandom((int)levelUpTimerDurationMin, (int)levelUpTimerDurationMax);
+        timerLevelUp.Restart();
     }
     public void OnChangeColor()
     {
         snake.RandomColor();
+        timerColor.SetRandom((int)colorTimerDurationMin, (int)colorTimerDurationMax);
+        timerColor.Restart();
     }
     public void OnTimerTriggered()
     {
         snake.Move();
+
+        if (snake.IsOverlapping())
+        {
+            Services.Get<SoundManager>().PlayFX("Pain");
+            snake.LoseQueue(snake.head);
+            Score -= 5;
+        }
 
         if (snake.IsOutOfBound())
         {
@@ -69,12 +131,9 @@ public class SceneSnake : Scene
             timerSnake.Stop();
             snake.Collision();
             timerPause.Restart();
-        }
-
-        if (snake.IsOverlapping())
-        {
-            Services.Get<SoundManager>().PlayFX("Pain");
-            snake.LoseQueue(snake.head);
+            timerSnake.SetDuration(moveTimerDuration * 2);
+            timerDefaultDuration.Restart();
+            Score -= 5;
         }
 
         List <Fruit>lstTmp = fruits.ToList();
@@ -91,6 +150,7 @@ public class SceneSnake : Scene
             GameOver();
         }
     }
+    #endregion
 
     public void GameOver()
     {
@@ -106,6 +166,7 @@ public class SceneSnake : Scene
             fruit.Draw();
         }
         snake.Draw();
+        Raylib.DrawText(Score.ToString(), 10, 10, 20, Color.White);
     }
 
     public override void Update()
@@ -126,6 +187,13 @@ public class SceneSnake : Scene
 
     private void UpdatePlaying()
     {
+        for (int i = fruits.Count - 1; i >= 0; i--)
+        {
+            if (((Fruit)fruits[i]).isEaten)
+            {
+                fruits.RemoveAt(i);
+            }
+        }
         snake.ChangeDirection(GetInputsDirection());
         if (Raylib.IsKeyDown(KeyboardKey.P))
         {
@@ -144,24 +212,50 @@ public class SceneSnake : Scene
 
     private void EatFruit(Fruit fruit)
     {
-        Services.Get<SoundManager>().PlayFX("Eating");
-        for (int i = fruits.Count - 1; i >= 0; i--)
+        if (!fruit.isEaten)
         {
-            if (((Fruit)fruits[i]).isEaten)
+            Services.Get<SoundManager>().PlayFX("Eating");
+            if (fruit.color.Contains(snake.SnakeColor) || fruit.color == Fruit.Rainbow)
             {
-                fruits.RemoveAt(i);
+                switch(fruit.Type)
+                {
+                    case TypeFruit.Apple:
+                        snake.Growth(2);
+                        break;
+                    case TypeFruit.Plum:
+                        snake.Growth(2);
+                        timerSnake.SetDuration(moveTimerDuration*0.5f);
+                        timerDefaultDuration.SetDuration(slowTimerDuration);
+                        timerDefaultDuration.Restart();
+                        break;
+                    case TypeFruit.Banana:
+                        snake.Growth(3);
+                        timerSnake.SetDuration(moveTimerDuration * 2);
+                        timerDefaultDuration.SetDuration(slowTimerDuration);
+                        timerDefaultDuration.Restart();
+                        break;
+                    case TypeFruit.WaterMelon:
+                        break;
+                    case TypeFruit.BlueBerry:
+                        snake.Growth();
+                        timerSnake.SetDuration(moveTimerDuration * 2);
+                        timerDefaultDuration.SetDuration(slowTimerDuration-2);
+                        timerDefaultDuration.Restart();
+                        break;
+                    default:
+                        snake.Growth();
+                        break;
+                }
+                Score += 10;
             }
+            else
+            {
+                Services.Get<SoundManager>().PlayFX("Disgusted");
+                //snake.RemoveElements(1);
+                Score -= 5;
+            }
+            fruit.isEaten = true;
         }
-        if (snake.SnakeColor == fruit.color)
-        {
-            snake.Growth();
-        }
-        else
-        {
-            Services.Get<SoundManager>().PlayFX("Disgusted");
-            snake.RemoveElements(1);
-        }
-        fruit.isEaten = true;
     }
 
     private Coordinates GetInputsDirection()

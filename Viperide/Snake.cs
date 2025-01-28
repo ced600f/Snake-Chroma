@@ -23,7 +23,7 @@ public class Snake
     Coordinates currentDirection = Coordinates.right;
     Coordinates nextDirection = Coordinates.right;
     bool directionChanged;
-    private bool growing = false;
+    private int growing = 0;
 
     Color color = Color.Green;
     #endregion
@@ -114,6 +114,7 @@ public class Snake
         {
             coordinates = body.Dequeue();
         }
+        RandomColor();
     }
 
     public void RandomColor()
@@ -123,28 +124,39 @@ public class Snake
         switch(value)
         {
             case 0:
-                colorName = "Purple";
-                color = Color.Purple; break;
+                if (!SetColor("Purple", Color.Purple)) RandomColor(); 
+                break;
             case 1:
-                colorName = "Red"; 
-                color = Color.Red; break;
+                if (!SetColor("Red", Color.Red)) RandomColor();
+                break;
             case 2:
-                colorName = "Green";
-                color = Color.Green; break;
+                if (!SetColor("Green", Color.Green)) RandomColor();
+                break;
             case 3:
-                colorName = "Blue";
-                color = Color.Blue; break;
+                if (!SetColor("Blue", Color.Blue)) RandomColor();
+                break;
             case 4:
-                colorName = "Yellow";
-                color = Color.Yellow; break;
+                if (!SetColor("Yellow", Color.Yellow)) RandomColor();
+                break;
             default:
                 break;
         }
     }
 
-    public void Growth()
+    private bool SetColor(string name,  Color col)
     {
-        growing = true;
+        if (name == colorName) return false;
+
+        colorName = name;
+        color = col;
+
+        return true;
+    }
+
+    public void Growth(int nbSegments=1)
+    {
+        Console.WriteLine(nbSegments);
+        growing = nbSegments;
     }
     public void Move()
     {
@@ -152,18 +164,20 @@ public class Snake
         var head = body.Last();
         var newHead = head + currentDirection;
         body.Enqueue(newHead);
-        if (!growing)
+        if (growing == 0)
+        {
             body.Dequeue();
-
-        growing = false;
+        }
+        else
+            growing--;
     }
 
-    public void Collision(int nElement=0)
+    public void Collision(int nElements=1)
     {
         var head = body.Last();
         var newHead = head - currentDirection;
         body.Enqueue(newHead);
-        body.Dequeue();
+        RemoveElements(nElements);
     }
 
     public bool IsCollindingWith(Coordinates coordinates)

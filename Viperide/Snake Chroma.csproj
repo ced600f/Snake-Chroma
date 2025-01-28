@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -9,11 +9,16 @@
 
   <ItemGroup>
     <None Remove="Images\Blue.png" />
+    <None Remove="Images\Blue2.png" />
     <None Remove="Images\gameover.png" />
     <None Remove="Images\Green.png" />
+    <None Remove="Images\Green2.png" />
     <None Remove="Images\menu2.png" />
     <None Remove="Images\Purple.png" />
+    <None Remove="Images\Purple2.png" />
+    <None Remove="Images\Rainbow.png" />
     <None Remove="Images\Red.png" />
+    <None Remove="Images\Red2.png" />
     <None Remove="Images\SnakeHeadBlue.png" />
     <None Remove="Images\SnakeHeadGreen.png" />
     <None Remove="Images\SnakeHeadPurple.png" />
@@ -25,6 +30,7 @@
     <None Remove="Images\SnakePartsRed.png" />
     <None Remove="Images\SnakePartsYellow.png" />
     <None Remove="Images\Yellow.png" />
+    <None Remove="Images\Yellow2.png" />
     <None Remove="Ressources\collision.mp3" />
     <None Remove="Ressources\disgust.mp3" />
     <None Remove="Ressources\eating.mp3" />
@@ -38,10 +44,16 @@
     <Content Include="Images\Blue.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Images\Blue2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Images\gameover.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\Green.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Green2.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\menu2.png">
@@ -50,7 +62,16 @@
     <Content Include="Images\Purple.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Images\Purple2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Rainbow.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Images\Red.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Red2.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\SnakeHeadBlue.png">
@@ -84,6 +105,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\Yellow.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Yellow2.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Ressources\collision.mp3">

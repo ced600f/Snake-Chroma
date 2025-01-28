@@ -10,5 +10,6 @@ public class BlueBerry:Fruit
     public BlueBerry(Grid grid):base(grid)
     {
         fruit = "Blue";
+        Type = TypeFruit.BlueBerry;
     }
 }

@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class Banana:Fruit
+public class Pepper:Fruit
 {
-    public Banana(Grid grid):base(grid)
+    public Pepper(Grid grid):base(grid)
     {
-        fruit = "Yellow";
-        Type = TypeFruit.Banana;
+        fruit = "Red2";
+        Type = TypeFruit.Pepper;
     }
 }
