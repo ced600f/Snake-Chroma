@@ -7,9 +7,14 @@ using System.Threading.Tasks;
 
 public class WaterMelon:Fruit
 {
-    public WaterMelon(Grid grid):base(grid)
+    public WaterMelon(Tilemap grid):base(grid)
     {
         fruit = "Green";
         Type = TypeFruit.WaterMelon;
+    }
+
+    public override int Eat(Snake snake, Timer? timerSnake = null, Timer? timerDuration = null)
+    {
+        return base.Eat(snake, timerSnake, timerDuration);
     }
 }

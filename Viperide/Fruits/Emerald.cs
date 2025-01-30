@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 public class Emerald:Fruit
 {
-    public Emerald(Grid grid):base(grid)
+    public Emerald(Tilemap grid):base(grid)
     {
         fruit = "Green2";
         Type = TypeFruit.Emerald;

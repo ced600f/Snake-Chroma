@@ -7,9 +7,19 @@ using System.Threading.Tasks;
 
 public class Apple:Fruit
 {
-    public Apple(Grid grid):base(grid)
+    public Apple(Tilemap grid):base(grid)
     {
         fruit = "Red";
         Type = TypeFruit.Apple;
     }
+
+    public override int Eat(Snake snake, Timer ?timerSnake = null, Timer ?timerDuration = null)
+    {
+        int Score = base.Eat(snake, timerSnake, timerDuration);
+
+        if (Score > 0 ) snake.Growth(2);
+
+        return Score;
+    }
+
 }

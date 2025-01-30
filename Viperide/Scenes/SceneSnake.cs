@@ -16,20 +16,19 @@ enum GameState
 
 public class SceneSnake : Scene
 {
-    Grid grid = new Grid(26,14);
+    //Grid grid = new Grid(26,14);
     Snake snake;
     List<Fruit> fruits = new List<Fruit>();
-
+    Tilemap tilemap = new Tilemap(30, 17, 64);
     #region timers
-    private readonly float moveTimerDuration = 0.4f;
     private readonly float colorTimerDurationMin = 5;
     private readonly float colorTimerDurationMax = 15;
     private readonly float fruitTimerDurationMin = 3;
     private readonly float fruitTimerDurationMax = 10;
     private readonly float pauseTimerDuration = 2;
-    private readonly float slowTimerDuration = 5;
     private readonly float levelUpTimerDurationMin = 15;
     private readonly float levelUpTimerDurationMax = 25;
+    private readonly int loseTimerDuration = 30;
 
     private Timer timerFruit;
     private Timer timerPause;
@@ -37,6 +36,7 @@ public class SceneSnake : Scene
     private Timer timerDefaultDuration;
     private Timer timerLevelUp;
     private Timer timerColor;
+    private Timer timerLoseSegment;
     #endregion
 
     private int Score=0;
@@ -44,13 +44,20 @@ public class SceneSnake : Scene
     private GameState gameState = GameState.Playing;
     public override void Load()
     {
-        grid.position = new Vector2(128, 92);
-        snake = new Snake(new(10,5),grid);
+        tilemap.AddLayer("Floor", "Floor", Color.SkyBlue);
+        tilemap.AddLayer("Walls", "Walls", Color.DarkBlue);
+        LevelLoader.Load(tilemap, "Walls", 1);
+        tilemap.AutoTiling("Walls", Coordinates.mooreNeightborhood);
+        tilemap.AddLayer("Holes", "Holes", Color.White);
+        LevelLoader.Load(tilemap, "Holes", 11);
+        tilemap.AutoTiling("Holes", Coordinates.mooreNeightborhood);
+                
+        snake = new Snake(new(10,5),tilemap);
         OnFruitTriggered();
         Services.Get<SoundManager>().PlayMusic("Ressources/game.mp3");
 
         // Timers
-        timerSnake = AddTimer(OnTimerTriggered, moveTimerDuration);
+        timerSnake = AddTimer(OnTimerTriggered, snake.CurrentSpeed);
 
         timerColor = AddTimer(OnChangeColor, colorTimerDurationMin);
         timerColor.SetRandom((int)colorTimerDurationMin, (int)colorTimerDurationMax);
@@ -64,16 +71,26 @@ public class SceneSnake : Scene
         timerPause = AddTimer(OnEndPauseTriggered, pauseTimerDuration, false);
         timerPause.Stop();
 
-        timerDefaultDuration = AddTimer(OnDefaultDurationTriggered, slowTimerDuration, false);
+        timerLoseSegment = AddTimer(OnLoseSegmentTriggered, loseTimerDuration, false);
+        timerLoseSegment.Stop();
+
+        timerDefaultDuration = AddTimer(OnDefaultDurationTriggered, 0, false);
         timerDefaultDuration.Stop();
         Score = 0;
-
     }
 
     #region triggers
+    public void OnLoseSegmentTriggered()
+    {
+        Services.Get<SoundManager>().PlayFX("Cut");
+        snake.RemoveElements(1);
+        timerLoseSegment.SetDuration(loseTimerDuration - snake.LoseDurationDelta);
+        timerLoseSegment.Restart();
+    }
+
     public void OnDefaultDurationTriggered()
     {
-        timerSnake.SetDuration(moveTimerDuration);
+        timerSnake.SetDuration(snake.CurrentSpeed);
     }
 
     public void OnEndPauseTriggered()
@@ -84,11 +101,11 @@ public class SceneSnake : Scene
 
     public void OnFruitTriggered()
     {
-        Fruit fruit = Fruit.Random(grid);
+        Fruit fruit = Fruit.Random(tilemap);
         // On teste si un fruit se superpose avec un autre fruit
         while (Fruit.IsColliding(fruits, fruit))
         {
-            fruit = Fruit.Random(grid);
+            fruit = Fruit.Random(tilemap);
         }
         fruits.Add(fruit);
         timerFruit?.SetRandom((int)fruitTimerDurationMin, (int)fruitTimerDurationMax);
@@ -97,11 +114,11 @@ public class SceneSnake : Scene
 
     public void OnLevelUpTriggered()
     {
-        Fruit fruit = Fruit.RandomLevelUp(grid);
+        Fruit fruit = Fruit.RandomLevelUp(tilemap);
         // On teste si un fruit se superpose avec un autre fruit
         while (Fruit.IsColliding(fruits, fruit))
         {
-            fruit = Fruit.RandomLevelUp(grid);
+            fruit = Fruit.RandomLevelUp(tilemap);
         }
         fruits.Add(fruit);
         timerLevelUp.SetRandom((int)levelUpTimerDurationMin, (int)levelUpTimerDurationMax);
@@ -117,21 +134,26 @@ public class SceneSnake : Scene
     {
         snake.Move();
 
+        if (snake.MoveType == EnumMoveType.Fall)
+        {
+            GameOver();
+        }
+
         if (snake.IsOverlapping())
         {
             Services.Get<SoundManager>().PlayFX("Pain");
-            snake.LoseQueue(snake.head);
+            snake.LoseTail(snake.head);
             Score -= 5;
         }
 
-        if (snake.IsOutOfBound())
+        if (snake.MoveType == EnumMoveType.OutOfBound)
         {
             Services.Get<SoundManager>().PlayFX("Collision");
             gameState = GameState.Paused;
             timerSnake.Stop();
-            snake.Collision();
             timerPause.Restart();
-            timerSnake.SetDuration(moveTimerDuration * 2);
+            snake.ResetSpeed();
+            timerSnake.SetDuration(snake.CurrentSpeed * 2);
             timerDefaultDuration.Restart();
             Score -= 5;
         }
@@ -160,13 +182,16 @@ public class SceneSnake : Scene
 
     public override void Draw()
     {
-        grid.Draw();
+        tilemap.Draw();
         foreach (var fruit in fruits)
         {
             fruit.Draw();
         }
         snake.Draw();
-        Raylib.DrawText(Score.ToString(), 10, 10, 20, Color.White);
+        Raylib.DrawText("Score : "+Score, 10, 10, 30, Color.White);
+        Color textColor = Color.Blue;
+        if (timerLoseSegment.RemainingTime <= 5) textColor = Color.Red;
+        Raylib.DrawText(timerLoseSegment.RemainingTime.ToString(), 10, 50, 30, textColor);
     }
 
     public override void Update()
@@ -212,50 +237,10 @@ public class SceneSnake : Scene
 
     private void EatFruit(Fruit fruit)
     {
-        if (!fruit.isEaten)
-        {
-            Services.Get<SoundManager>().PlayFX("Eating");
-            if (fruit.color.Contains(snake.SnakeColor) || fruit.color == Fruit.Rainbow)
-            {
-                switch(fruit.Type)
-                {
-                    case TypeFruit.Apple:
-                        snake.Growth(2);
-                        break;
-                    case TypeFruit.Plum:
-                        snake.Growth(2);
-                        timerSnake.SetDuration(moveTimerDuration*0.5f);
-                        timerDefaultDuration.SetDuration(slowTimerDuration);
-                        timerDefaultDuration.Restart();
-                        break;
-                    case TypeFruit.Banana:
-                        snake.Growth(3);
-                        timerSnake.SetDuration(moveTimerDuration * 2);
-                        timerDefaultDuration.SetDuration(slowTimerDuration);
-                        timerDefaultDuration.Restart();
-                        break;
-                    case TypeFruit.WaterMelon:
-                        break;
-                    case TypeFruit.BlueBerry:
-                        snake.Growth();
-                        timerSnake.SetDuration(moveTimerDuration * 2);
-                        timerDefaultDuration.SetDuration(slowTimerDuration-2);
-                        timerDefaultDuration.Restart();
-                        break;
-                    default:
-                        snake.Growth();
-                        break;
-                }
-                Score += 10;
-            }
-            else
-            {
-                Services.Get<SoundManager>().PlayFX("Disgusted");
-                //snake.RemoveElements(1);
-                Score -= 5;
-            }
-            fruit.isEaten = true;
-        }
+        int value = fruit.Eat(snake, timerSnake, timerDefaultDuration);
+        timerLoseSegment.SetDuration(loseTimerDuration - snake.LoseDurationDelta);
+        timerLoseSegment.Restart();
+        Score += value;
     }
 
     private Coordinates GetInputsDirection()

@@ -10,9 +10,11 @@
   <ItemGroup>
     <None Remove="Images\Blue.png" />
     <None Remove="Images\Blue2.png" />
+    <None Remove="Images\floor.png" />
     <None Remove="Images\gameover.png" />
     <None Remove="Images\Green.png" />
     <None Remove="Images\Green2.png" />
+    <None Remove="Images\hole.png" />
     <None Remove="Images\menu2.png" />
     <None Remove="Images\Purple.png" />
     <None Remove="Images\Purple2.png" />
@@ -29,15 +31,103 @@
     <None Remove="Images\SnakePartsPurple.png" />
     <None Remove="Images\SnakePartsRed.png" />
     <None Remove="Images\SnakePartsYellow.png" />
+    <None Remove="Images\Walls\void.png" />
+    <None Remove="Images\Walls\wall.png" />
+    <None Remove="Images\Walls\wall_B.png" />
+    <None Remove="Images\Walls\Wall_BD.png" />
+    <None Remove="Images\Walls\Wall_BG.png" />
+    <None Remove="Images\Walls\Wall_BM.png" />
+    <None Remove="Images\Walls\wall_D.png" />
+    <None Remove="Images\Walls\wall_G.png" />
+    <None Remove="Images\Walls\wall_H.png" />
+    <None Remove="Images\Walls\Wall_HD.png" />
+    <None Remove="Images\Walls\Wall_HG.png" />
+    <None Remove="Images\Walls\Wall_HM.png" />
+    <None Remove="Images\Walls\wall_ibd.png" />
+    <None Remove="Images\Walls\wall_ibg.png" />
+    <None Remove="Images\Walls\wall_ihd.png" />
+    <None Remove="Images\Walls\wall_ihg.png" />
+    <None Remove="Images\Walls\Wall_MD.png" />
+    <None Remove="Images\Walls\Wall_MG.png" />
+    <None Remove="Images\Walls\Wall_MM.png" />
     <None Remove="Images\Yellow.png" />
     <None Remove="Images\Yellow2.png" />
     <None Remove="Ressources\collision.mp3" />
+    <None Remove="Ressources\cut.mp3" />
     <None Remove="Ressources\disgust.mp3" />
     <None Remove="Ressources\eating.mp3" />
     <None Remove="Ressources\game.mp3" />
     <None Remove="Ressources\gameover.mp3" />
+    <None Remove="Ressources\Levels\Level_1.txt" />
+    <None Remove="Ressources\Levels\Level_11.txt" />
     <None Remove="Ressources\menu.mp3" />
     <None Remove="Ressources\pain.mp3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Images\floor.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\hole.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Walls\void.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Walls\wall.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Walls\wall_B.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Walls\wall_BD.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Walls\wall_BG.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Walls\wall_BM.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Walls\wall_D.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Walls\wall_G.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Walls\wall_H.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Walls\wall_HD.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Walls\wall_HG.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Walls\wall_HM.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Walls\wall_ibd.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Walls\wall_ibg.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Walls\wall_ihd.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Walls\wall_ihg.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Walls\wall_MD.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Walls\wall_MG.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Walls\wall_MM.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -113,6 +203,9 @@
     <Content Include="Ressources\collision.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Ressources\cut.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Ressources\disgust.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -120,6 +213,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Ressources\game.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Ressources\Levels\Level_1.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Ressources\Levels\Level_11.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Ressources\menu.mp3">

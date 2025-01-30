@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 public class SoundManager
 {
     Music music;
-    Dictionary<string, Sound> sounds = new System.Collections.Generic.Dictionary<string,Sound>();
+    Dictionary<string, Sound> sounds = new System.Collections.Generic.Dictionary<string, Sound>();
 
     public SoundManager()
     {
@@ -18,6 +18,7 @@ public class SoundManager
         sounds.Add("Collision", Raylib.LoadSound("Ressources/collision.mp3"));
         sounds.Add("Pain", Raylib.LoadSound("Ressources/pain.mp3"));
         sounds.Add("Disgusted", Raylib.LoadSound("Ressources/disgust.mp3"));
+        sounds.Add("Cut", Raylib.LoadSound("Ressources/cut.mp3"));
     }
 
     ~SoundManager()

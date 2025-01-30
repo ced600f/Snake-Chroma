@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 public class Orb:Fruit
 {
-    public Orb(Grid grid):base(grid)
+    public Orb(Tilemap grid):base(grid)
     {
         fruit = "Purple2";
         Type = TypeFruit.Orb;

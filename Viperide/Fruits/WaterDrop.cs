@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 public class WaterDrop:Fruit
 {
-    public WaterDrop(Grid grid):base(grid)
+    public WaterDrop(Tilemap grid):base(grid)
     {
         fruit = "Blue2";
         Type = TypeFruit.WaterDrop;

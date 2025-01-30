@@ -7,9 +7,24 @@ using System.Threading.Tasks;
 
 public class Banana:Fruit
 {
-    public Banana(Grid grid):base(grid)
+    public Banana(Tilemap grid):base(grid)
     {
         fruit = "Yellow";
         Type = TypeFruit.Banana;
+        minDuration = 5;
+    }
+
+    public override int Eat(Snake snake, Timer? timerSnake = null, Timer? timerDuration = null)
+    {
+        int Score = base.Eat(snake, timerSnake, timerDuration);
+        if (Score > 0)
+        {
+            snake.Growth(3);
+            snake.ResetSpeed();
+            timerSnake?.SetDuration(snake.CurrentSpeed * 2);
+            timerDuration?.SetDuration(minDuration);
+            timerDuration?.Restart();
+        }
+        return Score;
     }
 }

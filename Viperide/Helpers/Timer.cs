@@ -16,6 +16,8 @@ public class Timer
     public int max { get; private set; }
     public bool isRandom { get; private set; }
 
+    public int RemainingTime => (int)(duration-elapsedTime);
+
     public Timer(Action? callback, float duration, bool isLooping=true)
     {
         this.duration = duration;

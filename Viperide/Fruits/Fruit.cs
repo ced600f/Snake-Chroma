@@ -31,21 +31,29 @@ public class Fruit
     public Coordinates coordinate { get; private set; }
     public TypeFruit Type { get; init; }
 
-    Grid grid;
+    protected int minDuration = 0;
+    protected int maxDuration = 0;
+
+    Tilemap tilemap;
     protected string fruit;
     public bool isEaten = false;
     
     public string color => fruit;
 
-    public Fruit(Grid grid)
+    public Fruit(Tilemap tilemap)
     {
-        this.grid = grid;
-        coordinate = Coordinates.Random(grid.columns, grid.rows);
+        this.tilemap = tilemap;
+        Respawn();
     }
 
     public void Respawn()
     {
-        coordinate = Coordinates.Random(grid.columns, grid.rows);
+        coordinate = Coordinates.Random(tilemap.columns, tilemap.rows);
+        // On teste si un fruit se superpose avec un autre fruit
+        while (tilemap.IsSolid(coordinate))
+        {
+            Respawn();
+        }
     }
 
     public virtual void Draw()
@@ -53,34 +61,34 @@ public class Fruit
         try
         {
             Texture2D texture = ((Textures)Services.Get<Textures>()).GetTexture(fruit);
-            var inWorld = grid.GridToWorld(coordinate);
-            int deltaX = (grid.cellSize - texture.Width) / 2;
-            int deltaY = (grid.cellSize - texture.Height) / 2;
+            var inWorld = tilemap.MapToWorld(coordinate);
+            int deltaX = (tilemap.tileSize - texture.Width) / 2;
+            int deltaY = (tilemap.tileSize - texture.Height) / 2;
             Raylib.DrawTexture(texture, (int)inWorld.X + deltaX, (int)inWorld.Y + deltaY, Color.White);
         }
         catch (Exception ex) { }
     }
 
-    public static Fruit Random(Grid grid)
+    public static Fruit Random(Tilemap tilemap)
     {
         Random random = new Random();
         int type = random.Next(0, 5);
         switch(type)
         {
             case 0:
-                return new Apple(grid);
+                return new Apple(tilemap);
             case 1:
-                return new BlueBerry(grid);
+                return new BlueBerry(tilemap);
             case 2:
-                return new Banana(grid);
+                return new Banana(tilemap);
             case 3:
-                return new Plum(grid);
+                return new Plum(tilemap);
             default:
-                return new WaterMelon(grid);
+                return new WaterMelon(tilemap);
         }
     }
 
-    public static Fruit RandomLevelUp(Grid grid)
+    public static Fruit RandomLevelUp(Tilemap tilemap)
     {
         Random random = new Random();
         int type = random.Next(0, 5);
@@ -90,19 +98,38 @@ public class Fruit
             switch (type)
             {
                 case 0:
-                    return new Pepper(grid);
+                    return new Pepper(tilemap);
                 case 1:
-                    return new WaterDrop(grid);
+                    return new WaterDrop(tilemap);
                 case 2:
-                    return new Lightning(grid);
+                    return new Lightning(tilemap);
                 case 3:
-                    return new Orb(grid);
+                    return new Orb(tilemap);
                 default:
-                    return new Emerald(grid);
+                    return new Emerald(tilemap);
             }
         }
         else
-            return new Rainbow(grid);
+            return new Rainbow(tilemap);
+    }
+
+    public virtual int Eat(Snake snake, Timer ?timerSnake=null, Timer ?timerDuration=null)
+    {
+        if (!isEaten)
+        {
+            Services.Get<SoundManager>().PlayFX("Eating");
+            isEaten = true;
+            if (color.Contains(snake.SnakeColor) || color == Fruit.Rainbow)
+            {
+                return 10;
+            }
+            else
+            {
+                Services.Get<SoundManager>().PlayFX("Disgusted");
+                return -5;
+            }
+        }
+        return 0;
     }
 
     public static bool IsColliding(List<Fruit> fruits, Fruit fruit) => fruits.Contains(fruit);

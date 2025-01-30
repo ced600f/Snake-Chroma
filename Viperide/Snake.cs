@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,10 +14,18 @@ public enum EnumDirection
     Down
 }
 
+public enum EnumMoveType
+{
+    none,
+    OutOfBound,
+    Overlap,
+    Fall
+}
+
 public class Snake
 {
     #region Properties
-    Grid grid;
+    Tilemap tilemap;
     private string colorName = "Green";
 
     Queue<Coordinates> body = new Queue<Coordinates>();
@@ -24,6 +33,10 @@ public class Snake
     Coordinates nextDirection = Coordinates.right;
     bool directionChanged;
     private int growing = 0;
+    public EnumMoveType MoveType {  get; private set; }
+
+    private readonly float defaultSpeed = 0.4f;
+    public float CurrentSpeed { get; private set; }
 
     Color color = Color.Green;
     #endregion
@@ -31,66 +44,83 @@ public class Snake
     public int Length => body.Count;
     public string SnakeColor => colorName;
     public Coordinates head => body.Last();
-    
-    public Snake(Coordinates coordinate, Grid grid, int startSize=3)
+    public Coordinates tail => body.First();
+    public int LoseDurationDelta => (int)(body.Count()-2)/2;
+    public Snake(Coordinates coordinate, Tilemap tilemap, int startSize=3)
     {
-        this.grid = grid;
+        this.tilemap = tilemap;
+        CurrentSpeed = defaultSpeed;
         for(int i = startSize-1;i>0;i--)
             body.Enqueue(coordinate- currentDirection * i);
         
         body.Enqueue(coordinate);
     }
 
-    public void Draw()
+
+    #region draw
+    public void DrawHead()
     {
-        int i = 0;
-        foreach (Coordinates coordinate in body)
+        Coordinates coordinates = head;
+        Texture2D texture = ((Textures)Services.Get<Textures>()).GetTexture("SnakeHead" + colorName);
+        var inWorld = tilemap.MapToWorld(coordinates);
+        Rectangle source = new Rectangle(0, 45, 60, 90);
+
+        int DeltaX = (int)(tilemap.tileSize / 2 - source.Width / 2);
+        int DeltaY = (int)(tilemap.tileSize / 2 - source.Height / 2);
+
+        Rectangle dest = new Rectangle((int)inWorld.X + source.Width / 2 + DeltaX, (int)inWorld.Y + source.Height / 2 + DeltaY, source.Width, source.Height);
+        Raylib.DrawTexturePro(texture, source, dest, new System.Numerics.Vector2(source.Width / 2, source.Height / 2), (float)Coordinates.GetAngle(this.currentDirection) - 90, Color.White);
+
+    }
+
+    public void DrawTail()
+    {
+        Coordinates coordinates = tail;
+        Texture2D texture = ((Textures)Services.Get<Textures>()).GetTexture("SnakeParts" + colorName);
+        var inWorld = tilemap.MapToWorld(coordinates);
+        Rectangle source = new Rectangle(84, 0, 84, 84);
+
+        int DeltaX = (int)(tilemap.tileSize / 2 - source.Width / 2);
+        int DeltaY = (int)(tilemap.tileSize / 2 - source.Height / 2);
+
+        Rectangle dest = new Rectangle((int)inWorld.X + source.Width / 2 + DeltaX, (int)inWorld.Y + source.Height / 2 + DeltaY, source.Width, source.Height);
+        Raylib.DrawTexturePro(texture, source, dest, new System.Numerics.Vector2(source.Width / 2, source.Height / 2), (float)Coordinates.GetAngle(coordinates, body.ElementAt(1)) + 90, Color.White);
+    }
+
+    public void DrawElements()
+    {
+        var bodyArray = body.ToArray();
+        for (int i = 1; i < bodyArray.Length - 1; i++)
         {
-            var posInWorld = grid.GridToWorld(coordinate);
-            if (i == body.Count-1)
-            {
-                Texture2D texture = ((Textures)Services.Get<Textures>()).GetTexture("SnakeHead"+colorName);
-                var inWorld = grid.GridToWorld(coordinate);
-                Rectangle source = new Rectangle(0, 45, 60, 90);
+            Coordinates coordinates = bodyArray[i];
+            Texture2D texture = ((Textures)Services.Get<Textures>()).GetTexture("SnakeParts" + colorName);
+            var inWorld = tilemap.MapToWorld(coordinates);
+            Rectangle source = new Rectangle(0, 0, 84, 84);
 
-                int DeltaX = (int)(grid.cellSize/2 - source.Width/2);
-                int DeltaY = (int)(grid.cellSize/2 - source.Height/2);
+            int DeltaX = (int)(tilemap.tileSize / 2 - source.Width / 2);
+            int DeltaY = (int)(tilemap.tileSize / 2 - source.Height / 2);
 
-                Rectangle dest = new Rectangle((int)inWorld.X+source.Width/2+DeltaX, (int)inWorld.Y+source.Height/2+DeltaY, source.Width, source.Height);
-                Raylib.DrawTexturePro(texture, source, dest, new System.Numerics.Vector2(source.Width/2, source.Height/2),(float)Coordinates.GetAngle(this.currentDirection)-90 ,Color.White);
-
-            }
-            else if (i==0)
-            {
-                Texture2D texture = ((Textures)Services.Get<Textures>()).GetTexture("SnakeParts" + colorName);
-                var inWorld = grid.GridToWorld(coordinate);
-                Rectangle source = new Rectangle(84, 0, 84, 84);
-
-                int DeltaX = (int)(grid.cellSize / 2 - source.Width / 2);
-                int DeltaY = (int)(grid.cellSize / 2 - source.Height / 2);
-
-                Rectangle dest = new Rectangle((int)inWorld.X + source.Width / 2 + DeltaX, (int)inWorld.Y + source.Height / 2 + DeltaY, source.Width, source.Height);
-                Raylib.DrawTexturePro(texture, source, dest, new System.Numerics.Vector2(source.Width / 2, source.Height / 2), (float)Coordinates.GetAngle(coordinate, body.ElementAt(i + 1))+90, Color.White);
-            }
-            else
-            {
-                Texture2D texture = ((Textures)Services.Get<Textures>()).GetTexture("SnakeParts" + colorName);
-                var inWorld = grid.GridToWorld(coordinate);
-                Rectangle source = new Rectangle(0, 0, 84, 84);
-
-                int DeltaX = (int)(grid.cellSize / 2 - source.Width / 2);
-                int DeltaY = (int)(grid.cellSize / 2 - source.Height / 2);
-
-                Rectangle dest = new Rectangle((int)inWorld.X + source.Width / 2 + DeltaX, (int)inWorld.Y + source.Height / 2 + DeltaY, source.Width, source.Height);
-                Raylib.DrawTexturePro(texture, source, dest, new System.Numerics.Vector2(source.Width / 2, source.Height / 2), (float)Coordinates.GetAngle(coordinate, body.ElementAt(i+1)) - 90, Color.White);
-            }
-            i++;
+            Rectangle dest = new Rectangle((int)inWorld.X + source.Width / 2 + DeltaX, (int)inWorld.Y + source.Height / 2 + DeltaY, source.Width, source.Height);
+            Raylib.DrawTexturePro(texture, source, dest, new System.Numerics.Vector2(source.Width / 2, source.Height / 2), (float)Coordinates.GetAngle(body.ElementAt(i - 1), coordinates, body.ElementAt(i + 1)) + 180, Color.White);
         }
     }
 
-    public bool IsOutOfBound()
+    public void Draw()
     {
-        return head.row<0 || head.column<0 ||head.row>=grid.rows || head.column>=grid.columns;
+        DrawHead();
+        DrawElements();
+        DrawTail();
+    }
+    #endregion
+
+    public void ResetSpeed()
+    {
+        CurrentSpeed = defaultSpeed;
+    }
+
+    public bool IsOutOfBound(Coordinates coordinates)
+    {
+        return coordinates.row<0 || coordinates.column<0 || coordinates.row>= tilemap.rows || coordinates.column>= tilemap.columns;
     }
 
     public bool IsOverlapping()
@@ -107,7 +137,12 @@ public class Snake
         }
     }
 
-    public void LoseQueue(Coordinates cut)
+    public bool IsCollidingWall(Coordinates newHead)
+    {
+        return tilemap.IsSolid(newHead);
+    }
+
+    public void LoseTail(Coordinates cut)
     {
         Coordinates coordinates = body.Dequeue();
         while (coordinates != cut)
@@ -160,24 +195,36 @@ public class Snake
     }
     public void Move()
     {
+        MoveType = EnumMoveType.none;
         currentDirection = nextDirection;
         var head = body.Last();
         var newHead = head + currentDirection;
-        body.Enqueue(newHead);
-        if (growing == 0)
+
+        if (tilemap.IsSolid(newHead, "Holes"))
         {
-            body.Dequeue();
+            MoveType = EnumMoveType.Fall;
+        }
+        else if (!IsOutOfBound(newHead) && !IsCollidingWall(newHead))
+        {
+            body.Enqueue(newHead);
+            if (growing == 0)
+            {
+                body.Dequeue();
+            }
+            else
+            {
+                growing--;
+            }
+
+            if (IsOverlapping())
+            {
+                MoveType = EnumMoveType.Overlap;
+            }
         }
         else
-            growing--;
-    }
-
-    public void Collision(int nElements=1)
-    {
-        var head = body.Last();
-        var newHead = head - currentDirection;
-        body.Enqueue(newHead);
-        RemoveElements(nElements);
+        {
+            MoveType = EnumMoveType.OutOfBound;    
+        }
     }
 
     public bool IsCollindingWith(Coordinates coordinates)
@@ -190,4 +237,35 @@ public class Snake
         if (this.currentDirection == -direction || direction==Coordinates.zero) return;
         this.nextDirection = direction;
     }
+
+
+    private int GetHeadTextureID()
+    {
+        if (currentDirection == Coordinates.left) return 1;
+        if (currentDirection == Coordinates.up) return 2;
+        if (currentDirection == Coordinates.right) return 4;
+        if (currentDirection == Coordinates.down) return 8;
+        return 0;
+    }
+    private int GetTailTextureID()
+    {
+        int id = 0;
+        if (tail + Coordinates.left == body.ElementAt(1)) return 20;
+        if (tail + Coordinates.up == body.ElementAt(1)) return 21;
+        if (tail + Coordinates.right == body.ElementAt(1)) return 22;
+        if (tail + Coordinates.down == body.ElementAt(1)) return 23;
+        return id;
+    }
+
+    private int GetBodyTextureID(Coordinates previous, Coordinates current, Coordinates next)
+    {
+        int id = 0;
+        if (current + Coordinates.left == next || current + Coordinates.left == previous) id += 1;
+        if (current + Coordinates.up == next || current + Coordinates.up == previous) id += 2;
+        if (current + Coordinates.right == next || current + Coordinates.right == previous) id += 4;
+        if (current + Coordinates.down == next || current + Coordinates.down == previous) id += 8;
+        
+        return id;
+    }
+
 }
