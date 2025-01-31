@@ -19,7 +19,7 @@ public class BlueBerry:Fruit
         int Score = base.Eat(snake, timerSnake, timerDuration);
         if (Score > 0)
         {
-            snake.Growth();
+            snake.Growth((snake.Attributes.Contains("Scored") ? 2 : 1));
             snake.ResetSpeed();
             timerSnake?.SetDuration(snake.CurrentSpeed * 2);
             timerDuration?.SetDuration(minDuration);

@@ -29,6 +29,8 @@ public class SceneSnake : Scene
     private readonly float levelUpTimerDurationMin = 15;
     private readonly float levelUpTimerDurationMax = 25;
     private readonly int loseTimerDuration = 30;
+    private readonly int holeTimerDuration = 10;
+    private readonly int freezeTimerDuration = 10;
 
     private Timer timerFruit;
     private Timer timerPause;
@@ -37,6 +39,8 @@ public class SceneSnake : Scene
     private Timer timerLevelUp;
     private Timer timerColor;
     private Timer timerLoseSegment;
+    private Timer timerHole;
+    private Timer timerFreeze;
     #endregion
 
     private int Score=0;
@@ -51,7 +55,8 @@ public class SceneSnake : Scene
         tilemap.AddLayer("Holes", "Holes", Color.White);
         LevelLoader.Load(tilemap, "Holes", 11);
         tilemap.AutoTiling("Holes", Coordinates.mooreNeightborhood);
-                
+//        tilemap.CleanMapSolid("Holes");
+
         snake = new Snake(new(10,5),tilemap);
         OnFruitTriggered();
         Services.Get<SoundManager>().PlayMusic("Ressources/game.mp3");
@@ -74,12 +79,34 @@ public class SceneSnake : Scene
         timerLoseSegment = AddTimer(OnLoseSegmentTriggered, loseTimerDuration, false);
         timerLoseSegment.Stop();
 
+        timerFreeze = AddTimer(OnFreezeTriggered, freezeTimerDuration, false);
+        timerFreeze.Stop();
+
         timerDefaultDuration = AddTimer(OnDefaultDurationTriggered, 0, false);
         timerDefaultDuration.Stop();
         Score = 0;
+
+        timerHole = AddTimer(OnHoleTriggered, holeTimerDuration, true);
+
     }
 
     #region triggers
+    public void OnFreezeTriggered()
+    {
+        timerFreeze.Stop();
+        timerLoseSegment.Start();
+    }
+
+    public void OnHoleTriggered()
+    {
+        Coordinates coordinate = Coordinates.Random(tilemap.columns, tilemap.rows);
+        // On teste si un fruit se superpose avec un autre fruit
+        while (tilemap.IsSolid(coordinate))
+        {
+            coordinate = Coordinates.Random(tilemap.columns, tilemap.rows);
+        }
+        tilemap.SetTile(coordinate, "Holes", true);
+    }
     public void OnLoseSegmentTriggered()
     {
         Services.Get<SoundManager>().PlayFX("Cut");
@@ -192,6 +219,10 @@ public class SceneSnake : Scene
         Color textColor = Color.Blue;
         if (timerLoseSegment.RemainingTime <= 5) textColor = Color.Red;
         Raylib.DrawText(timerLoseSegment.RemainingTime.ToString(), 10, 50, 30, textColor);
+        if (timerFreeze.isRunning)
+        {
+            Raylib.DrawText(timerFreeze.RemainingTime.ToString(), 10, 80, 30, Color.White);
+        }
     }
 
     public override void Update()
@@ -238,9 +269,38 @@ public class SceneSnake : Scene
     private void EatFruit(Fruit fruit)
     {
         int value = fruit.Eat(snake, timerSnake, timerDefaultDuration);
-        timerLoseSegment.SetDuration(loseTimerDuration - snake.LoseDurationDelta);
-        timerLoseSegment.Restart();
+        if (!timerFreeze.isRunning)
+        {
+            timerLoseSegment.SetDuration(loseTimerDuration - snake.LoseDurationDelta);
+            timerLoseSegment.Restart();
+        }
         Score += value;
+
+        // Applying Attributes
+        if (snake.Attributes.Contains("Freeze"))
+        {
+            snake.Attributes.Remove("Freeze");
+            timerLoseSegment.Stop();
+            timerFreeze.SetDuration(freezeTimerDuration);
+            timerFreeze.Restart();
+        }
+        if (snake.Attributes.Contains("Crystal"))
+        {
+            snake.Attributes.Remove("Crystal");
+            timerLoseSegment.Stop();
+            timerFreeze.SetDuration(freezeTimerDuration+5);
+            timerFreeze.Restart();
+        }
+        if (snake.Attributes.Contains("Score"))
+        {
+            snake.Attributes.Remove("Score");
+            snake.Attributes.Add("Scored");
+            // TODO add timer
+        }
+        if (snake.Attributes.Contains("Scored"))
+        {
+            Score += value;
+        }
     }
 
     private Coordinates GetInputsDirection()

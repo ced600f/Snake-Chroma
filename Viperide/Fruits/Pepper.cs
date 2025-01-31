@@ -19,7 +19,7 @@ public class Pepper:Fruit
         int score = base.Eat(snake, timerSnake, timerDuration);
         if (score > 0)
         {
-            snake.Growth(4);
+            snake.Growth(4 * (snake.Attributes.Contains("Scored") ? 2 : 1));
             snake.ResetSpeed();
             timerSnake?.SetDuration(snake.CurrentSpeed * 0.15f);
             timerDuration?.SetDuration(minDuration);

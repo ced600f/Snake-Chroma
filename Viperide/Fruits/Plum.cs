@@ -19,7 +19,7 @@ public class Plum:Fruit
         int Score = base.Eat(snake, timerSnake, timerDuration);
         if (Score > 0)
         {
-            snake.Growth(2);
+            snake.Growth(2 * (snake.Attributes.Contains("Scored") ? 2 : 1));
             snake.ResetSpeed();
             timerSnake?.SetDuration(snake.CurrentSpeed * 0.5f);
             timerDuration?.SetDuration(minDuration);

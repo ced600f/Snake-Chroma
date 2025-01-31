@@ -19,7 +19,7 @@ public class Banana:Fruit
         int Score = base.Eat(snake, timerSnake, timerDuration);
         if (Score > 0)
         {
-            snake.Growth(3);
+            snake.Growth(3 * (snake.Attributes.Contains("Scored") ? 2 : 1));
             snake.ResetSpeed();
             timerSnake?.SetDuration(snake.CurrentSpeed * 2);
             timerDuration?.SetDuration(minDuration);

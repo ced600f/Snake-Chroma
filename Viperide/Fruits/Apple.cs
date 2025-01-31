@@ -17,7 +17,7 @@ public class Apple:Fruit
     {
         int Score = base.Eat(snake, timerSnake, timerDuration);
 
-        if (Score > 0 ) snake.Growth(2);
+        if (Score > 0 ) snake.Growth(2*(snake.Attributes.Contains("Scored")?2:1));
 
         return Score;
     }

@@ -27,6 +27,7 @@ public class Fruit
     #region constant
     public static readonly string Rainbow = "Rainbow";
     #endregion
+    private IAssetsManager assets = Services.Get<IAssetsManager>();
 
     public Coordinates coordinate { get; private set; }
     public TypeFruit Type { get; init; }
@@ -60,7 +61,7 @@ public class Fruit
     {
         try
         {
-            Texture2D texture = ((Textures)Services.Get<Textures>()).GetTexture(fruit);
+            Texture2D texture = assets.GetTextureByName(fruit);
             var inWorld = tilemap.MapToWorld(coordinate);
             int deltaX = (tilemap.tileSize - texture.Width) / 2;
             int deltaY = (tilemap.tileSize - texture.Height) / 2;

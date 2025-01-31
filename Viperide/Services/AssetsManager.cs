@@ -9,6 +9,7 @@ public interface IAssetsManager
 {
     public T Get<T>(string name);
     public Texture2D GetTextureFromSet(string textureSetName, int id);
+    public Texture2D GetTextureByName(string textureName);
 
 }
 
@@ -72,6 +73,11 @@ public class AssetsManager : IAssetsManager
             textureSet.texturesInfos.Add(id, name);
         }
         textureSets.Add(textureSetName, textureSet);
+    }
+
+    public Texture2D GetTextureByName(string textureName)
+    {
+        return textures[textureName];
     }
 
     public Texture2D GetTextureFromSet(string textureSetName, int id)

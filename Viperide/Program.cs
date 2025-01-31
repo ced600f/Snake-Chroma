@@ -18,6 +18,21 @@ class Program
             (0,"Hole","Images/hole.png")
         });
 
+        assetsManager.AddTextureSet("Fruit", new List<(int id, string name, string path)>
+        {
+            (1, "Red", "Images/Red.png"),
+            (2, "Yellow","Images/Yellow.png"),
+            (3, "Blue","Images/Blue.png"),
+            (4, "Purple", "Images/Purple.png"),
+            (5, "Green","Images/Green.png"),
+            (6, "Red2", "Images/Red2.png"),
+            (7, "Yellow2", "Images/Yellow2.png"),
+            (8, "Blue2", "Images/Blue2.png"),
+            (9, "Purple2", "Images/Purple2.png"),
+            (10, "Green2", "Images/Green2.png"),
+            (11, "Rainbow", "Images/Rainbow.png")
+        });
+
         assetsManager.AddTextureSet("Walls", new List<(int id, string name, string path)>
         {
             (-1,"Void","Images/Walls/void.png"),
@@ -53,7 +68,6 @@ class Program
             (252, "Wall_sideTop","Images/Walls/wall_HM.png"),
 
         });
-
     }
 
     static int Main()

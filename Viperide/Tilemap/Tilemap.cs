@@ -90,6 +90,17 @@ public class Tilemap
         layersOrder.Add(name);
     }
 
+    public void CleanMapSolid(string layerName)
+    {
+        for(int column=0; column<columns; column++)
+        {
+            for(int row=0; row<rows; row++)
+            {
+                layers[layerName].tiles[column, row].isSolid = false;
+            }
+        }
+    }
+
     public void SetTile(Coordinates coordinates, string layerName, int textureId)
     {
         layers[layerName].tiles[coordinates.column, coordinates.row] = new Tile

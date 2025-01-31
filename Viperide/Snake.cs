@@ -37,6 +37,7 @@ public class Snake
 
     private readonly float defaultSpeed = 0.4f;
     public float CurrentSpeed { get; private set; }
+    public List <string>Attributes = new List<string>();
 
     Color color = Color.Green;
     #endregion

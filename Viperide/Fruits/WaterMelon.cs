@@ -15,6 +15,13 @@ public class WaterMelon:Fruit
 
     public override int Eat(Snake snake, Timer? timerSnake = null, Timer? timerDuration = null)
     {
-        return base.Eat(snake, timerSnake, timerDuration);
+        int Score = base.Eat(snake, timerSnake, timerDuration);
+
+        if (Score > 0)
+        {
+            if (!snake.Attributes.Contains("Freeze"))
+                snake.Attributes.Add("Freeze");
+        }
+        return Score;
     }
 }
