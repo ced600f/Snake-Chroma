@@ -27,6 +27,7 @@ public class Snake
     #region Properties
     Tilemap tilemap;
     private string colorName = "Green";
+    private IAssetsManager assets = Services.Get<IAssetsManager>();
 
     Queue<Coordinates> body = new Queue<Coordinates>();
     Coordinates currentDirection = Coordinates.right;
@@ -62,7 +63,7 @@ public class Snake
     public void DrawHead()
     {
         Coordinates coordinates = head;
-        Texture2D texture = ((Textures)Services.Get<Textures>()).GetTexture("SnakeHead" + colorName);
+        Texture2D texture = assets.GetTextureByName("SnakeHead" + colorName);
         var inWorld = tilemap.MapToWorld(coordinates);
         Rectangle source = new Rectangle(0, 45, 60, 90);
 
@@ -77,7 +78,7 @@ public class Snake
     public void DrawTail()
     {
         Coordinates coordinates = tail;
-        Texture2D texture = ((Textures)Services.Get<Textures>()).GetTexture("SnakeParts" + colorName);
+        Texture2D texture = assets.GetTextureByName("SnakeParts" + colorName);
         var inWorld = tilemap.MapToWorld(coordinates);
         Rectangle source = new Rectangle(84, 0, 84, 84);
 
@@ -94,7 +95,7 @@ public class Snake
         for (int i = 1; i < bodyArray.Length - 1; i++)
         {
             Coordinates coordinates = bodyArray[i];
-            Texture2D texture = ((Textures)Services.Get<Textures>()).GetTexture("SnakeParts" + colorName);
+            Texture2D texture = assets.GetTextureByName("SnakeParts" + colorName);
             var inWorld = tilemap.MapToWorld(coordinates);
             Rectangle source = new Rectangle(0, 0, 84, 84);
 
@@ -204,6 +205,15 @@ public class Snake
         if (tilemap.IsSolid(newHead, "Holes"))
         {
             MoveType = EnumMoveType.Fall;
+            body.Enqueue(newHead);
+            if (growing == 0)
+            {
+                body.Dequeue();
+            }
+            else
+            {
+                growing--;
+            }
         }
         else if (!IsOutOfBound(newHead) && !IsCollidingWall(newHead))
         {

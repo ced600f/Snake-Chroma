@@ -8,6 +8,8 @@ class Program
 
     static void LoadAssets()
     {
+
+
         assetsManager.AddTextureSet("Floor", new List<(int id, string name, string path)>
         {
             (0,"Floor","Images/floor.png")
@@ -16,6 +18,26 @@ class Program
         {
             (-1,"Void","Images/Walls/void.png"),
             (0,"Hole","Images/hole.png")
+        });
+
+        assetsManager.AddTextureSet("Background", new List<(int id, string name, string path)>
+        {
+            (0, "Menu" ,"Images/menu2.png"),
+            (1, "GameOver", "Images/gameover.png")
+        });
+
+        assetsManager.AddTextureSet("Snake", new List<(int id, string name, string path)>
+        {
+            (0, "SnakeHeadBlue","Images/SnakeHeadBlue.png"),
+            (1, "SnakeHeadGreen","Images/SnakeHeadGreen.png"),
+            (2, "SnakeHeadPurple","Images/SnakeHeadPurple.png"),
+            (3, "SnakeHeadRed","Images/SnakeHeadRed.png"),
+            (4 ,"SnakeHeadYellow","Images/SnakeHeadYellow.png"),
+            (5, "SnakePartsBlue","Images/SnakePartsBlue.png"),
+            (6, "SnakePartsGreen","Images/SnakePartsGreen.png"),
+            (7, "SnakePartsPurple","Images/SnakePartsPurple.png"),
+            (8, "SnakePartsRed","Images/SnakePartsRed.png"),
+            (9, "SnakePartsYellow","Images/SnakePartsYellow.png")
         });
 
         assetsManager.AddTextureSet("Fruit", new List<(int id, string name, string path)>
@@ -83,7 +105,6 @@ class Program
 
         LoadAssets();
 
-        Textures texturesManager = new Textures();
         SoundManager soundManager = new SoundManager();
 
         sceneManager.Load<SceneMenu>();

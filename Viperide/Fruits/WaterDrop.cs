@@ -12,4 +12,18 @@ public class WaterDrop:Fruit
         fruit = "Blue2";
         Type = TypeFruit.WaterDrop;
     }
+
+    public override int Eat(Snake snake, Timer? timerSnake = null, Timer? timerDuration = null)
+    {
+        int Score = base.Eat(snake, timerSnake, timerDuration);
+
+        if (Score > 0)
+        {
+            if (!snake.Attributes.Contains("Crystal"))
+                snake.Attributes.Add("Crystal");
+        }
+        Score = 0;
+        return Score;
+    }
+
 }

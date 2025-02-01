@@ -12,4 +12,16 @@ public class Orb:Fruit
         fruit = "Purple2";
         Type = TypeFruit.Orb;
     }
+    public override int Eat(Snake snake, Timer? timerSnake = null, Timer? timerDuration = null)
+    {
+        int Score = base.Eat(snake, timerSnake, timerDuration);
+
+        if (Score > 0)
+        {
+            if (!snake.Attributes.Contains("Shield"))
+                snake.Attributes.Add("Shield");
+        }
+        Score = 0;
+        return Score;
+    }
 }

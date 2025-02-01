@@ -17,7 +17,7 @@ public class SceneMenu : Scene
     {
         try
         {
-            Texture2D imgMenu = ((Textures)Services.Get<Textures>()).GetTexture("Menu");
+            Texture2D imgMenu = assets.GetTextureByName("Menu");
             Raylib.DrawTexture(imgMenu, 0, 0, Color.White);
         }
         catch { }

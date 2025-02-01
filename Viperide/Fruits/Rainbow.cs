@@ -12,4 +12,17 @@ public class Rainbow:Fruit
         fruit = "Rainbow";
         Type = TypeFruit.Rainbow;
     }
+    public override int Eat(Snake snake, Timer? timerSnake = null, Timer? timerDuration = null)
+    {
+        int Score = base.Eat(snake, timerSnake, timerDuration);
+
+        if (Score > 0)
+        {
+            if (!snake.Attributes.Contains("Rainbow"))
+                snake.Attributes.Add("Rainbow");
+        }
+        Score = 0;
+        return Score;
+    }
+
 }

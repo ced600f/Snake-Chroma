@@ -16,7 +16,7 @@ public class SceneGameOver : Scene
     {
         try
         {
-            Texture2D imgMenu = ((Textures)Services.Get<Textures>()).GetTexture("GameOver");
+            Texture2D imgMenu = assets.GetTextureByName("GameOver");
             Raylib.DrawTexture(imgMenu, 0, 0, Color.White);
         }
         catch { }

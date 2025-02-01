@@ -12,4 +12,18 @@ public class Emerald:Fruit
         fruit = "Green2";
         Type = TypeFruit.Emerald;
     }
+
+    public override int Eat(Snake snake, Timer? timerSnake = null, Timer? timerDuration = null)
+    {
+        int Score = base.Eat(snake, timerSnake, timerDuration);
+
+        if (Score > 0 )
+        {
+            if (!snake.Attributes.Contains("Score"))
+                snake.Attributes.Add("Score");
+        }
+
+        Score = 0;
+        return Score;
+    }
 }

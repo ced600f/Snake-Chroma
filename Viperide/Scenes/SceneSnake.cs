@@ -31,6 +31,9 @@ public class SceneSnake : Scene
     private readonly int loseTimerDuration = 30;
     private readonly int holeTimerDuration = 10;
     private readonly int freezeTimerDuration = 10;
+    private readonly int scoredTimerDuration = 10;
+    private readonly int shieldTimerDuration = 20;
+    private readonly int rainbowTimerDuration = 10;
 
     private Timer timerFruit;
     private Timer timerPause;
@@ -41,6 +44,9 @@ public class SceneSnake : Scene
     private Timer timerLoseSegment;
     private Timer timerHole;
     private Timer timerFreeze;
+    private Timer timerScored;
+    private Timer timerShield;
+    private Timer timerRainbow;
     #endregion
 
     private int Score=0;
@@ -76,11 +82,20 @@ public class SceneSnake : Scene
         timerPause = AddTimer(OnEndPauseTriggered, pauseTimerDuration, false);
         timerPause.Stop();
 
+        timerShield = AddTimer(OnShieldTriggered, shieldTimerDuration, false);
+        timerShield.Stop();
+
         timerLoseSegment = AddTimer(OnLoseSegmentTriggered, loseTimerDuration, false);
         timerLoseSegment.Stop();
 
         timerFreeze = AddTimer(OnFreezeTriggered, freezeTimerDuration, false);
         timerFreeze.Stop();
+
+        timerScored = AddTimer(OnScoredTriggered, scoredTimerDuration, false);
+        timerScored.Stop();
+
+        timerRainbow = AddTimer(OnRainbowTriggered, rainbowTimerDuration, false);
+        timerRainbow.Stop();
 
         timerDefaultDuration = AddTimer(OnDefaultDurationTriggered, 0, false);
         timerDefaultDuration.Stop();
@@ -91,10 +106,25 @@ public class SceneSnake : Scene
     }
 
     #region triggers
+    public void OnRainbowTriggered()
+    {
+        timerShield.Stop();
+        snake.Attributes.Remove("RainbowON");
+    }
+    public void OnShieldTriggered()
+    {
+        timerShield.Stop();
+        snake.Attributes.Remove("ShieldON");
+    }
     public void OnFreezeTriggered()
     {
         timerFreeze.Stop();
         timerLoseSegment.Start();
+    }
+    public void OnScoredTriggered()
+    {
+        timerScored.Stop();
+        snake.Attributes.Remove("Scored");
     }
 
     public void OnHoleTriggered()
@@ -163,7 +193,14 @@ public class SceneSnake : Scene
 
         if (snake.MoveType == EnumMoveType.Fall)
         {
-            GameOver();
+            if (snake.Attributes.Contains("ShieldON"))
+            {
+                tilemap.SetTile(snake.head, "Holes", false);
+            }
+            else
+            {
+                GameOver();
+            }
         }
 
         if (snake.IsOverlapping())
@@ -177,6 +214,8 @@ public class SceneSnake : Scene
         {
             Services.Get<SoundManager>().PlayFX("Collision");
             gameState = GameState.Paused;
+            if (snake.Length > 3)
+                snake.RemoveElements(1);
             timerSnake.Stop();
             timerPause.Restart();
             snake.ResetSpeed();
@@ -219,9 +258,27 @@ public class SceneSnake : Scene
         Color textColor = Color.Blue;
         if (timerLoseSegment.RemainingTime <= 5) textColor = Color.Red;
         Raylib.DrawText(timerLoseSegment.RemainingTime.ToString(), 10, 50, 30, textColor);
+
+        // Display snake's bonus
         if (timerFreeze.isRunning)
         {
             Raylib.DrawText(timerFreeze.RemainingTime.ToString(), 10, 80, 30, Color.White);
+        }
+        if (snake.Attributes.Contains("Scored"))
+        {
+            textColor = Color.Red;
+            Raylib.DrawText("X2", 100, 10, 30, textColor);
+        }
+        if (snake.Attributes.Contains("ShieldON"))
+        {
+            Texture2D texture = assets.GetTextureByName("Purple2");
+            Raylib.DrawTexture(texture, 180, 0, Color.White);
+        }
+        
+        if (snake.Attributes.Contains("RainbowON"))
+        {
+            Texture2D texture = assets.GetTextureByName("Rainbow");
+            Raylib.DrawTexture(texture, 250, 0, Color.White);
         }
     }
 
@@ -269,11 +326,11 @@ public class SceneSnake : Scene
     private void EatFruit(Fruit fruit)
     {
         int value = fruit.Eat(snake, timerSnake, timerDefaultDuration);
-        if (!timerFreeze.isRunning)
+        /*if (!timerFreeze.isRunning)
         {
             timerLoseSegment.SetDuration(loseTimerDuration - snake.LoseDurationDelta);
             timerLoseSegment.Restart();
-        }
+        }*/
         Score += value;
 
         // Applying Attributes
@@ -295,7 +352,19 @@ public class SceneSnake : Scene
         {
             snake.Attributes.Remove("Score");
             snake.Attributes.Add("Scored");
-            // TODO add timer
+            timerScored.Restart();
+        }
+        if (snake.Attributes.Contains("Shield"))
+        {
+            snake.Attributes.Remove("Shield");
+            snake.Attributes.Add("ShieldON");
+            timerShield.Restart();
+        }
+        if (snake.Attributes.Contains("Rainbow"))
+        {
+            snake.Attributes.Remove("Rainbow");
+            snake.Attributes.Add("RainbowON");
+            timerRainbow.Restart();
         }
         if (snake.Attributes.Contains("Scored"))
         {

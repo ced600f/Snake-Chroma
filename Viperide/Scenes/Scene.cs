@@ -8,6 +8,7 @@ using Raylib_cs;
 public abstract class Scene
 {
     private List<Timer> timers = new List<Timer>();
+    protected IAssetsManager assets = Services.Get<IAssetsManager>();
 
     public Timer AddTimer(Action? callback, float duration, bool isLooping = true)
     {
