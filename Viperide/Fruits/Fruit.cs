@@ -120,7 +120,7 @@ public class Fruit
         {
             Services.Get<SoundManager>().PlayFX("Eating");
             isEaten = true;
-            if (color.Contains(snake.SnakeColor) || color == Fruit.Rainbow)
+            if (color.Contains(snake.SnakeColor) || color == Fruit.Rainbow || snake.Attributes.Contains("RainbowON"))
             {
                 return 10;
             }

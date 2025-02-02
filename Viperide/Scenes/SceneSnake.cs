@@ -196,6 +196,7 @@ public class SceneSnake : Scene
             if (snake.Attributes.Contains("ShieldON"))
             {
                 tilemap.SetTile(snake.head, "Holes", false);
+                tilemap.AutoTiling("Holes", Coordinates.mooreNeightborhood);
             }
             else
             {
@@ -207,7 +208,7 @@ public class SceneSnake : Scene
         {
             Services.Get<SoundManager>().PlayFX("Pain");
             snake.LoseTail(snake.head);
-            Score -= 5;
+            Score -= 50;
         }
 
         if (snake.MoveType == EnumMoveType.OutOfBound)
@@ -267,18 +268,18 @@ public class SceneSnake : Scene
         if (snake.Attributes.Contains("Scored"))
         {
             textColor = Color.Red;
-            Raylib.DrawText("X2", 100, 10, 30, textColor);
+            Raylib.DrawText("X2", 180, 10, 30, textColor);
         }
         if (snake.Attributes.Contains("ShieldON"))
         {
             Texture2D texture = assets.GetTextureByName("Purple2");
-            Raylib.DrawTexture(texture, 180, 0, Color.White);
+            Raylib.DrawTexture(texture, 220, 0, Color.White);
         }
         
         if (snake.Attributes.Contains("RainbowON"))
         {
             Texture2D texture = assets.GetTextureByName("Rainbow");
-            Raylib.DrawTexture(texture, 250, 0, Color.White);
+            Raylib.DrawTexture(texture, 290, 0, Color.White);
         }
     }
 
@@ -326,11 +327,8 @@ public class SceneSnake : Scene
     private void EatFruit(Fruit fruit)
     {
         int value = fruit.Eat(snake, timerSnake, timerDefaultDuration);
-        /*if (!timerFreeze.isRunning)
-        {
-            timerLoseSegment.SetDuration(loseTimerDuration - snake.LoseDurationDelta);
-            timerLoseSegment.Restart();
-        }*/
+        if (!timerLoseSegment.isRunning)
+            timerLoseSegment.Start();
         Score += value;
 
         // Applying Attributes

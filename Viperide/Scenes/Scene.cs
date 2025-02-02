@@ -33,7 +33,7 @@ public abstract class Scene
     public virtual void Load() { }
     public virtual void Update()
     {
-        //Services.Get<SoundManager>().Update();
+        Services.Get<SoundManager>().Update();
         UpdateTimers();
     }
 

@@ -24,6 +24,7 @@ public class SceneGameOver : Scene
 
     public override void Update()
     {
+        base.Update();
         if (Raylib.IsKeyPressed(KeyboardKey.Space))
         {
             StartMenu();
